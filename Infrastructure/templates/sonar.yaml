@@ -15,7 +15,7 @@ objects:
     - name: ${SONARQUBE_VERSION}
       from:
         kind: DockerImage
-        name: docker.io/wkulhanek/${SONARQUBE_SERVICE_NAME}:${SONARQUBE_VERSION}
+        name: docker.io/wkulhanek/${SONARQUBE_SERVICE_NAME}:latest
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
@@ -120,7 +120,7 @@ objects:
         - postgresql
         from:
           kind: ImageStreamTag
-          name: postgresql:9.6
+          name: postgresql:${SONARQUBE_POSTGRESQL_VERSION}
           namespace: openshift
 - apiVersion: v1
   kind: DeploymentConfig
@@ -243,11 +243,11 @@ objects:
       name: ${SONARQUBE_SERVICE_NAME}
 parameters:
 - name: SONARQUBE_SERVICE_NAME
-  value: sonar
+  value: sonarqube
   displayName: SonarQube Service Name
   description: The name of the OpenShift Service exposed for the SonarQube container (also used as the name of docker image).
 - name: SONARQUBE_VERSION
-  value: 6.7.4
+  value: 6.7.5
   displayName: SonarQube Version
   description: the version (tag) of SonarQube docker image
 - name: SONARQUBE_CPU_MIN
@@ -274,6 +274,10 @@ parameters:
   value: 4Gi
   displayName: PostgreSQL for SonarQube storage size
   description: Volume space available for data.
+- name: SONARQUBE_POSTGRESQL_VERSION
+  value: "9.6"
+  displayName: PostgreSQL for SonarQube version
+  description: Version of PostgreSQL server used for SonarQube
 - name: SONARQUBE_POSTGRESQL_USER
   value: sonar
   displayName: PostgreSQL user for SonarQube
