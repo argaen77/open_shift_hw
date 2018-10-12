@@ -7,6 +7,8 @@ if [ "$#" -ne 1 ]; then
 fi
 
 GUID=$1
+TMPL_DIR=$(dirname $0)/../templates
+
 echo "Setting up Nexus in project $GUID-nexus"
 
 # Code to set up the Nexus. It will need to
@@ -29,3 +31,5 @@ echo "Setting up Nexus in project $GUID-nexus"
 # oc new-app -f ../templates/nexus.yaml --param .....
 
 # To be Implemented by Student
+oc -n $GUID-nexus new-app -f ${TMPL_DIR}/nexus.yaml
+oc -n $GUID-nexus rollout status dc/nexus3 -w
