@@ -1,5 +1,5 @@
 == Parks Map Multi-service Application
-
+w
 This is an example application consisting of three micro-services to be used in the Advanced OpenShift Development Homework Assignment. Read these instructions carefully to successfully complete the homework assignment.
 
 You are expected to clone this repository into your own public repository (GitHub, Gogs, Gitlab). This repository needs to be accessible to the instructor.
