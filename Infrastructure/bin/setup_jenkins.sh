@@ -25,15 +25,12 @@ echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cl
 # The build configurations need to have two environment variables to be passed to the Pipeline:
 # * GUID: the GUID used in all the projects
 # * CLUSTER: the base url of the cluster used (e.g. na39.openshift.opentlc.com)
-GUID=$1
-REPO=$2
-CLUSTER=$3
 
-# echo "Allowing Jenkins in grading project to edit resources in this Jenkins project"
-# oc -n ${GUID}-jenkins policy add-role-to-user edit system:serviceaccount:gpte-jenkins:jenkins
+echo "Setup acces rights for grading jenkins"
+oc -n ${GUID}-jenkins policy add-role-to-user edit system:serviceaccount:gpte-jenkins:jenkins
 
 echo "Setting up Jenkins"
-oc -n $GUID-jenkins new-app -f ../templates/jenkins.yaml -p MEMORY_LIMIT=2Gi -p VOLUME_CAPACITY=4Gi
+oc -n $GUID-jenkins new-app -f ../templates/jenkins.yaml p MEMORY_REQUEST=2Gi -p MEMORY_LIMIT=2Gi -p VOLUME_CAPACITY=4Gi
 oc -n $GUID-jenkins rollout status dc/jenkins -w
 
 echo "Building Jenkins Slave Maven"
@@ -41,12 +38,12 @@ cat ../templates/jenkins_skopeo/Dockerfile | oc -n $GUID-jenkins new-build --nam
 oc -n $GUID-jenkins logs -f bc/jenkins-slave-maven
 oc -n $GUID-jenkins new-app -f ../templates/jenkins-configmap.yaml --param GUID=${GUID}
 
-# echo "Creating and configuring Build Configs for 3 pipelines"
-# oc -n $GUID-jenkins new-build ${REPO} --name="mlbparks-pipeline" --strategy=pipeline --context-dir="MLBParks"
-# oc -n $GUID-jenkins set env bc/mlbparks-pipeline CLUSTER=${CLUSTER} GUID=${GUID}
-#
-# oc -n $GUID-jenkins new-build ${REPO} --name="nationalparks-pipeline" --strategy=pipeline --context-dir="Nationalparks"
-# oc -n $GUID-jenkins set env bc/nationalparks-pipeline CLUSTER=${CLUSTER} GUID=${GUID}
-#
-# oc -n $GUID-jenkins new-build ${REPO} --name="parksmap-pipeline" --strategy=pipeline --context-dir="ParksMap"
-# oc -n $GUID-jenkins set env bc/parksmap-pipeline CLUSTER=${CLUSTER} GUID=${GUID}
+echo "Creating and configuring Build Configs for 3 pipelines"
+oc -n $GUID-jenkins new-build ${REPO} --name="mlbparks-pipeline" --strategy=pipeline --context-dir="MLBParks"
+oc -n $GUID-jenkins set env bc/mlbparks-pipeline CLUSTER=${CLUSTER} GUID=${GUID}
+
+oc -n $GUID-jenkins new-build ${REPO} --name="nationalparks-pipeline" --strategy=pipeline --context-dir="Nationalparks"
+oc -n $GUID-jenkins set env bc/nationalparks-pipeline CLUSTER=${CLUSTER} GUID=${GUID}
+
+oc -n $GUID-jenkins new-build ${REPO} --name="parksmap-pipeline" --strategy=pipeline --context-dir="ParksMap"
+oc -n $GUID-jenkins set env bc/parksmap-pipeline CLUSTER=${CLUSTER} GUID=${GUID}
