@@ -30,13 +30,13 @@ echo "Setup acces rights for grading jenkins"
 oc -n ${GUID}-jenkins policy add-role-to-user edit system:serviceaccount:gpte-jenkins:jenkins
 
 echo "Setting up Jenkins"
-oc -n $GUID-jenkins new-app -f ../templates/jenkins.yaml -p MEMORY_LIMIT=2Gi -p MEMORY_REQUEST=2Gi -p VOLUME_CAPACITY=4Gi
+oc -n $GUID-jenkins new-app -f Infrastructure/templates/jenkins.yaml -p MEMORY_LIMIT=2Gi -p MEMORY_REQUEST=2Gi -p VOLUME_CAPACITY=4Gi
 oc -n $GUID-jenkins rollout status dc/jenkins -w
 
 echo "Buid skopeo pod"
-cat ../templates/jenkins_skopeo/Dockerfile | oc -n $GUID-jenkins new-build --name=jenkins-slave-maven -D -
+cat Infrastructure/templates/jenkins_skopeo/Dockerfile | oc -n $GUID-jenkins new-build --name=jenkins-slave-maven -D -
 oc -n $GUID-jenkins logs -f bc/jenkins-slave-maven
-oc -n $GUID-jenkins new-app -f ../templates/jenkins-configmap.yaml --param GUID=${GUID}
+oc -n $GUID-jenkins new-app -f Infrastructure/templates/jenkins-configmap.yaml --param GUID=${GUID}
 
 echo "Creating and configuring Build Configs for 3 pipelines"
 oc -n $GUID-jenkins new-build ${REPO} --name="mlbparks-pipeline" --strategy=pipeline --context-dir="MLBParks"
