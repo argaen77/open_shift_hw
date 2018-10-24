@@ -27,7 +27,7 @@ oc -n ${GUID}-parks-prod create configmap parksdb-conf \
        --from-literal=DB_NAME=parks
 
 # Setup replicated MongoDB from templates + configure it via ConfigMap
-oc -n ${GUID}-parks-prod new-app -f ../templates/mongodb.yaml -p MONGO_CONFIGMAP_NAME=parksdb-conf
+oc -n ${GUID}-parks-prod new-app -f Infrastructure/templates/mongodb.yaml -p MONGO_CONFIGMAP_NAME=parksdb-conf
 
 echo -n "Checking if replicated MongoDB is ready "
 while : ; do
