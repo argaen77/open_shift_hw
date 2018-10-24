@@ -30,5 +30,5 @@ echo "Setting up Nexus in project $GUID-nexus"
 # oc new-app -f ../templates/nexus.yaml --param .....
 
 # To be Implemented by Student
-oc -n $GUID-nexus new-app -f ../templates/nexus.yaml
+oc -n $GUID-nexus new-app -f Infrastructure/templates/nexus.yaml
 oc -n $GUID-nexus rollout status dc/nexus3 -w
