@@ -26,7 +26,7 @@ oc -n ${GUID}-parks-dev create configmap parksdb-conf \
        --from-literal=DB_NAME=parks
 
 # MLBParks
-oc -n ${GUID}-parks-dev new-build --binary=true --name=mlbparks --docker-image jboss-eap70-openshift:1.7
+oc -n ${GUID}-parks-dev new-build --binary=true --name=mlbparks jboss-eap70-openshift:1.7
 oc -n ${GUID}-parks-dev new-app ${GUID}-parks-dev/mlbparks:0.0-0 --allow-missing-imagestream-tags=true --name=mlbparks -l type=parksmap-backend
 oc -n ${GUID}-parks-dev set triggers dc/mlbparks --remove-all
 oc -n ${GUID}-parks-dev expose dc/mlbparks --port 8080
@@ -44,7 +44,7 @@ oc -n ${GUID}-parks-dev set env dc/mlbparks --from=configmap/mlbparks-conf
 oc -n ${GUID}-parks-dev set deployment-hook dc/mlbparks --post -- curl -s http://mlbparks:8080/ws/data/load/
 
 # NationalParks
-oc -n ${GUID}-parks-dev new-build --binary=true --name=nationalparks --docker-image redhat-openjdk18-openshift:1.2
+oc -n ${GUID}-parks-dev new-build --binary=true --name=nationalparks redhat-openjdk18-openshift:1.2
 oc -n ${GUID}-parks-dev new-app ${GUID}-parks-dev/nationalparks:0.0-0 --allow-missing-imagestream-tags=true --name=nationalparks -l type=parksmap-backend
 oc -n ${GUID}-parks-dev set triggers dc/nationalparks --remove-all
 oc -n ${GUID}-parks-dev expose dc/nationalparks --port 8080
@@ -62,7 +62,7 @@ oc -n ${GUID}-parks-dev set env dc/nationalparks --from=configmap/nationalparks-
 oc -n ${GUID}-parks-dev set deployment-hook dc/nationalparks --post -- curl -s http://nationalparks:8080/ws/data/load/
 
 # ParksMap
-oc -n ${GUID}-parks-dev new-build --binary=true --name=parksmap --docker-image redhat-openjdk18-openshift:1.2
+oc -n ${GUID}-parks-dev new-build --binary=true --name=parksmap redhat-openjdk18-openshift:1.2
 oc -n ${GUID}-parks-dev new-app ${GUID}-parks-dev/parksmap:0.0-0 --allow-missing-imagestream-tags=true --name=parksmap -l type=parksmap-frontend
 oc -n ${GUID}-parks-dev set triggers dc/parksmap --remove-all
 oc -n ${GUID}-parks-dev expose dc/parksmap --port 8080
